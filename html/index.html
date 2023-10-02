@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxe Lane</title>
+    <link rel="icon" href="../images/logo/logo.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" />
+  </head>
+  <body>
+    <div class="back-drop" onclick="closeMobileOptions()"></div>
+    <ul class="mobile-header-navs" onclick="closeMobileOptions()">
+      <li class="sign-in">
+        <a href="signIn.html">SIGN IN</a>
+      </li>
+      <li>
+        <a href="signOn.html">REGISTER</a>
+      </li>
+      <li>CONTACT US</li>
+      <li>ORDERS</li>
+    </ul>
+    <div class="body">
+      <header>
+        <img src="../images/logo/logo.png" alt="logo" class="logo" />
+        <ul class="header-navs">
+          <li class="menu" onclick="mainDropDown()">MENU</li>
+          <li class="sign-in non-menu">
+            <a href="signIn.html">SIGN IN</a>
+          </li>
+          <li class="sign-on non-menu">
+            <a href="signOn.html">REGISTER</a>
+          </li>
+          <li class="non-menu">CONTACT US</li>
+          <li class="non-menu">ORDERS</li>
+        </ul>
+      </header>
+      <main>
+        <span class="search-and-cart">
+          <span class="search">
+            <div>
+              <input type="text" placeholder="Find what you need... " />
+            </div>
+            <div>
+              <button type="submit">
+                <img src="../images/search/search.png" alt="search" />
+              </button>
+            </div>
+          </span>
+          <span class="cart-image">
+            <img src="../images/cart/cart.png" alt="cart" />
+          </span>
+        </span>
+        <span class="main-body">
+          <nav class="left-nav-bar">
+            <ul class="left-nav-items"></ul>
+          </nav>
+          <span class="products"></span>
+        </span>
+      </main>
+      <footer>
+        <ol class="footer-navs">
+          <li>Terms and Conditions</li>
+          <li>Policy</li>
+        </ol>
+      </footer>
+    </div>
+    <script src="../js/script.js"></script>
+  </body>
+</html>
 
