@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  text-align: center;
+  font-weight: bolder;
+  background: rgb(211, 211, 211);
+}
+
+.form {
+  background: white;
+  padding: 5rem 3rem;
+  border-radius: 2rem;
+  box-shadow: 0.1rem 0.1rem 1rem 0.1rem black;
+}
+
+form {
+  margin-bottom: 1rem;
+  display: grid;
+  width: 50%;
+  grid-row-gap: 1rem;
+}
+
+input {
+  border-radius: 1rem;
+  width: 18rem;
+  height: 1.5rem;
+  border: 0.1rem solid black;
+}
+
+.sign-in-submit,
+.sign-on-submit {
+  margin-top: 1rem;
+  width: 5rem;
+  justify-self: center;
+}
+
+.sign-in-submit:hover,
+.sign-in-submit:active,
+.sign-on-submit:hover,
+.sign-on-submit:active {
+  background-color: bisque;
+  border: 0.1rem solid black;
+  border-radius: 2rem;
+  cursor: pointer;
+}
+
+.hello-div {
+  display: block;
+}
+
+.back-sign {
+  display: none;
+}
+
+.back-drop-sign {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  opacity: 0.3;
+  position: relative;
+}
+
+.error-sign {
+  display: none;
+}
+
+.error-message-sign {
+  position: absolute;
+  display: block;
+  padding: 5rem;
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0.1rem 0.1rem 1rem 0.1rem black;
+}
+
+@media (max-width: 40rem) {
+  .form {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .error-message-sign {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
