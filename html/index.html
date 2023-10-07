@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="back-drop" onclick="closeMobileOptions()"></div>
+    <span class="mobile-facet" onclick="closeMobileOptions()"></span>
     <ul class="mobile-header-navs" onclick="closeMobileOptions()">
       <li class="sign-in">
         <a href="signIn.html">SIGN IN</a>
@@ -21,7 +22,12 @@
     </ul>
     <div class="body">
       <header>
-        <img src="../images/logo/logo.png" alt="logo" class="logo" />
+        <img
+          src="../images/logo/logo.png"
+          alt="logo"
+          class="logo"
+          onclick="mobileFilter()"
+        />
         <ul class="header-navs">
           <li class="menu" onclick="mainDropDown()">MENU</li>
           <li class="sign-in non-menu">
@@ -67,4 +73,3 @@
     <script src="../js/script.js"></script>
   </body>
 </html>
-
