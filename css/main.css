@@ -278,6 +278,26 @@ header .logo {
   .left-nav-bar {
     display: none;
   }
+
+  .mobile-facet {
+    display: none;
+    background: white;
+    height: 100vh;
+    width: 50%;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-facet li:active,
+  .mobile-facet li:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 40rem) {
@@ -297,6 +317,26 @@ header .logo {
 
   .menu {
     display: block;
+  }
+
+  .mobile-facet {
+    display: none;
+    background: white;
+    height: 100vh;
+    width: 50%;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-facet li:active,
+  .mobile-facet li:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   .mobile-header-navs {
@@ -340,4 +380,3 @@ header .logo {
     display: none;
   }
 }
-
