@@ -23,6 +23,7 @@ const mainProducts = document.querySelector(".products");
 const facets = document.querySelector(".left-nav-items");
 const leftNavBar = document.querySelector(".left-nav-bar");
 const facetSet = new Set();
+const mobileFacet = document.querySelector(".mobile-facet");
 
 let users = [
   {
@@ -63,59 +64,36 @@ const products = {
 
 //To add facet
 if (leftNavBar) {
-  for (const category of cateogries) {
+  cateogries.forEach((category) => {
     const filter = document.createElement("span");
     filter.classList = "left-nav-item";
     filter.textContent = category;
     facets.appendChild(filter);
-  }
+  });
 }
 
 //To update products
 function productAdd(category) {
   if (products[category]) {
     const categoryEntry = Object.entries(products[category]);
-    for (const [id, data] of categoryEntry) {
-      const newDiv = document.createElement("div");
-      newDiv.classList = "product";
 
-      const imageSpan = document.createElement("span");
-      imageSpan.classList = "product-image";
+    categoryEntry.forEach((cat) => {
+      const product = `<div class="product">
+        <span class="product-image">
+        <img src="../images/products/${category}.jpg">
+        </span>
+        <span class="product-content">
+        <span class="product-details">
+        <div class="product-name">${cat[1].name}</div>
+        <div class="product-price">${cat[1].price}</div>
+        </span><span class="add-to-cart">
+        <button type="submit">ADD TO CART</button>
+        </span>
+        </span>
+        </div>`;
 
-      const image = document.createElement("img");
-      image.src = `../images/products/${category}.jpg`;
-
-      const contentSpan = document.createElement("span");
-      contentSpan.classList = "product-content";
-
-      const contentSpanChildOne = document.createElement("span");
-      contentSpanChildOne.classList = "product-details";
-
-      const productName = document.createElement("div");
-      productName.classList = "product-name";
-      productName.textContent = data.name;
-
-      const productPrice = document.createElement("div");
-      productPrice.classList = "product-price";
-      productPrice.textContent = data.price;
-
-      const contentSpanChildTwo = document.createElement("span");
-      contentSpanChildTwo.classList = "add-to-cart";
-
-      const addToCart = document.createElement("button");
-      addToCart.type = "submit";
-      addToCart.textContent = "ADD TO CART";
-
-      mainProducts.appendChild(newDiv);
-      newDiv.appendChild(imageSpan);
-      imageSpan.appendChild(image);
-      newDiv.appendChild(contentSpan);
-      contentSpan.appendChild(contentSpanChildOne);
-      contentSpanChildOne.appendChild(productName);
-      contentSpanChildOne.appendChild(productPrice);
-      contentSpan.appendChild(contentSpanChildTwo);
-      contentSpanChildTwo.appendChild(addToCart);
-    }
+      mainProducts.insertAdjacentHTML("beforeend", product);
+    });
   }
 }
 
@@ -124,14 +102,12 @@ function populateProducts() {
   if (mainProducts) {
     if (facetSet.size > 0) {
       mainProducts.innerHTML = "";
-      for (const category of facetSet) {
-        productAdd(category);
-      }
+
+      facetSet.forEach((category) => productAdd(category));
     } else {
       mainProducts.innerHTML = "";
-      for (const category of cateogries) {
-        productAdd(category);
-      }
+
+      cateogries.forEach((category) => productAdd(category));
     }
   }
 }
@@ -139,34 +115,52 @@ function populateProducts() {
 populateProducts();
 
 //To filter products
-for (const category of document.querySelectorAll(".left-nav-item")) {
-  category.addEventListener("click", function () {
-    if (facetSet.has(category.textContent)) {
-      facetSet.delete(category.textContent);
-      populateProducts();
-    } else {
-      facetSet.add(category.textContent);
-      populateProducts();
-    }
-  });
-}
+const filterProducts = () => {
+  for (const category of document.querySelectorAll(".left-nav-item")) {
+    category.addEventListener("click", function () {
+      if (facetSet.has(category.textContent)) {
+        facetSet.delete(category.textContent);
+        populateProducts();
+        category.style.color = "black";
+        category.style.fontWeight = "normal";
+      } else {
+        facetSet.add(category.textContent);
+        populateProducts();
+        category.style.color = "red";
+        category.style.fontWeight = "bolder";
+      }
+    });
+  }
+};
+
+filterProducts();
 
 //user validation
 function userValidation(inEmail, inPassword) {
-  let a = false;
-  for (let user of users) {
-    const { name, email, password } = user;
-    if (inEmail === email && inPassword === password) {
-      userName = name;
-      a = true;
-      return a;
-      break;
+  console.log(users);
+  const a = users.some((user) => {
+    if (user.email === inEmail && user.password === inPassword) {
+      userName = user.name;
+      return true;
     } else {
-      a = false;
+      return false;
     }
-  }
+  });
+
   return a;
 }
+
+//Login error message
+const errorMessage = (errMsg) => {
+  signInPage.style.display = "none";
+  loginErrorMessage.classList.add("error-message-sign");
+  loginBackDrop.classList.add("back-drop-sign");
+  loginErrorMessage.textContent = errMsg;
+
+  setTimeout(function () {
+    window.location.href = "signIn.html";
+  }, 3000);
+};
 
 //signIn
 function login(event) {
@@ -177,24 +171,10 @@ function login(event) {
 
       window.location.href = "index.html";
     } else {
-      signInPage.style.display = "none";
-      loginErrorMessage.classList.add("error-message-sign");
-      loginBackDrop.classList.add("back-drop-sign");
-      loginErrorMessage.textContent = "User not found. Click Sign Up";
-
-      setTimeout(function () {
-        window.location.href = "signIn.html";
-      }, 3000);
+      errorMessage("User not found. Click Sign Up");
     }
   } else {
-    signInPage.style.display = "none";
-    loginErrorMessage.classList.add("error-message-sign");
-    loginBackDrop.classList.add("back-drop-sign");
-    loginErrorMessage.textContent = "Kindly Enter the Proper email Format";
-
-    setTimeout(function () {
-      window.location.href = "signIn.html";
-    }, 3000);
+    errorMessage("Kindly Enter the Proper email Format");
   }
 }
 
@@ -289,14 +269,7 @@ function register(event) {
       window.location.href = "index.html";
     }, 5000);
   } else {
-    signInPage.style.display = "none";
-    loginErrorMessage.classList.add("error-message-sign");
-    loginBackDrop.classList.add("back-drop-sign");
-    loginErrorMessage.textContent = "Kindly Enter the Proper email Format";
-
-    setTimeout(function () {
-      window.location.href = "signOn.html";
-    }, 3000);
+    errorMessage("Kindly Enter the Proper email Format");
   }
 }
 
@@ -304,6 +277,7 @@ function register(event) {
 function mainDropDown() {
   if (menu) {
     menuNav.style.display = "flex";
+    menuNav.style.gap = "0.5rem";
     backDrop.style.display = "block";
   }
 }
@@ -311,5 +285,29 @@ function mainDropDown() {
 function closeMobileOptions() {
   menuNav.style.display = "none";
   backDrop.style.display = "none";
+  mobileFacet.style.display = "none";
+  mobileFacet.innerHTML = "";
 }
 
+//display and close mobile filter
+function mobileFilter() {
+  if (
+    window.getComputedStyle(leftNavBar).getPropertyValue("display") === "none"
+  ) {
+    cateogries.forEach((category) => {
+      const filter = document.createElement("span");
+      filter.classList = "left-nav-item";
+      filter.textContent = category;
+      mobileFacet.appendChild(filter);
+      if (facetSet.has(filter.textContent)) {
+        filter.style.color = "red";
+        filter.style.fontWeight = "bolder";
+      }
+    });
+
+    filterProducts();
+
+    mobileFacet.style.display = "flex";
+    backDrop.style.display = "block";
+  }
+}
