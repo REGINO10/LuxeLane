@@ -243,6 +243,16 @@ header .logo {
   cursor: pointer;
 }
 
+.new-add-to-cart {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.atc-decrement {
+  border: solid black 0.1rem;
+}
+
 .footer-navs {
   display: flex;
   list-style: none;
