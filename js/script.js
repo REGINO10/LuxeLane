@@ -24,6 +24,10 @@ const facets = document.querySelector(".left-nav-items");
 const leftNavBar = document.querySelector(".left-nav-bar");
 const facetSet = new Set();
 const mobileFacet = document.querySelector(".mobile-facet");
+const viewCart = document.querySelector(".cart-image");
+const addtoCartMainDiv = document.querySelector(".add-products");
+const cardNoProducts = document.querySelector(".cart-no-products");
+const checkoutButton = document.querySelectorAll(".checkout");
 
 let users = [
   {
@@ -62,6 +66,8 @@ const products = {
   },
 };
 
+let addToCartProducts = {};
+
 //To add facet
 if (leftNavBar) {
   cateogries.forEach((category) => {
@@ -86,8 +92,9 @@ function productAdd(category) {
         <span class="product-details">
         <div class="product-name">${cat[1].name}</div>
         <div class="product-price">${cat[1].price}</div>
-        </span><span class="add-to-cart">
-        <button type="submit">ADD TO CART</button>
+        </span>
+        <span class="add-to-cart">
+        <button type="submit" class="add-to-cart-button">ADD TO CART</button>
         </span>
         </span>
         </div>`;
@@ -137,7 +144,6 @@ filterProducts();
 
 //user validation
 function userValidation(inEmail, inPassword) {
-  console.log(users);
   const a = users.some((user) => {
     if (user.email === inEmail && user.password === inPassword) {
       userName = user.name;
@@ -207,11 +213,38 @@ function logoutAdd() {
   newItem.classList.add("log-out");
   newItem.textContent = "LOGOUT";
   navigation.appendChild(newItem);
+
   logOutCTA = document.querySelector(".log-out");
 
   logOutCTA.addEventListener("click", function () {
+    backDrop.style.display = "flex";
+
+    backDrop.style.justifyContent = "center";
+    backDrop.style.alignItems = "center";
+
+    const logoutChild = document.createElement("span");
+    if (window.getComputedStyle(menu).getPropertyValue("display") === "none") {
+      logoutChild.textContent = `Thanks for shoping ${localStorage
+        .getItem("name")
+        .toUpperCase()}. Wish you a great day from Luxe Lane 😊`;
+    } else {
+      logoutChild.textContent = `Thanks for shoping ${localStorage
+        .getItem("name")
+        .toUpperCase()} 😊`;
+    }
+    logoutChild.style.color = "black";
+    logoutChild.style.padding = "2rem 0.5rem";
+    logoutChild.style.background = "white";
+    logoutChild.style.borderRadius = "1rem";
+    logoutChild.style.fontWeight = "bolder";
+    logoutChild.style.fontSize = "1.5rem";
+    backDrop.appendChild(logoutChild);
+
     localStorage.removeItem("name");
-    window.location.href = "index.html";
+    localStorage.removeItem("cartProducts");
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
   });
 }
 
@@ -291,23 +324,232 @@ function closeMobileOptions() {
 
 //display and close mobile filter
 function mobileFilter() {
-  if (
-    window.getComputedStyle(leftNavBar).getPropertyValue("display") === "none"
-  ) {
-    cateogries.forEach((category) => {
-      const filter = document.createElement("span");
-      filter.classList = "left-nav-item";
-      filter.textContent = category;
-      mobileFacet.appendChild(filter);
-      if (facetSet.has(filter.textContent)) {
-        filter.style.color = "red";
-        filter.style.fontWeight = "bolder";
-      }
-    });
+  if (leftNavBar) {
+    if (
+      window.getComputedStyle(leftNavBar).getPropertyValue("display") === "none"
+    ) {
+      cateogries.forEach((category) => {
+        const filter = document.createElement("span");
+        filter.classList = "left-nav-item";
+        filter.textContent = category;
+        mobileFacet.appendChild(filter);
+        if (facetSet.has(filter.textContent)) {
+          filter.style.color = "red";
+          filter.style.fontWeight = "bolder";
+        }
+      });
 
-    filterProducts();
+      filterProducts();
 
-    mobileFacet.style.display = "flex";
-    backDrop.style.display = "block";
+      mobileFacet.style.display = "flex";
+      backDrop.style.display = "block";
+    }
   }
 }
+
+//Add to cart
+const addToCart = function () {
+  if (mainProducts) {
+    mainProducts.addEventListener("click", (e) => {
+      if (JSON.parse(localStorage.getItem("cartProducts"))) {
+        addToCartProducts = JSON.parse(localStorage.getItem("cartProducts"));
+      }
+      let adcTargetParent = e.target.closest(".add-to-cart");
+      const productTargetParent = e.target.closest(".product");
+      const productName =
+        productTargetParent.querySelector(".product-name").textContent;
+      const productPrice =
+        productTargetParent.querySelector(".product-price").textContent;
+      const productImage = productTargetParent
+        .querySelector("img")
+        .getAttribute("src");
+
+      //Adding to cart
+      if (e.target.classList.contains("add-to-cart-button")) {
+        adcTargetParent.innerHTML = "";
+        const newAddToCart = `
+    <span class="new-add-to-cart">
+    <button class="atc-decrement">-</button>
+    <span class="atc-product-count">1</span>
+    <button class="atc-increment">+</button>
+    </span>`;
+        adcTargetParent.insertAdjacentHTML("afterbegin", newAddToCart);
+        if (!addToCartProducts[productName]) {
+          addToCartProducts[productName] = {};
+        }
+
+        if (addToCartProducts[productName].count > 0) {
+          addToCartProducts[productName].count++;
+        } else {
+          addToCartProducts[productName].count = 1;
+        }
+        addToCartProducts[productName].price = productPrice
+          .split(" ")[1]
+          .replace("/-", "");
+        addToCartProducts[productName].image = productImage;
+
+        localStorage.setItem("cartProducts", JSON.stringify(addToCartProducts));
+      }
+
+      //Increasing product number
+      if (e.target.classList.contains("atc-increment")) {
+        let addedProductCount = e.target
+          .closest(".add-to-cart")
+          .querySelector(".atc-product-count");
+        addedProductCount.textContent =
+          Number(addedProductCount.textContent) + 1;
+
+        addToCartProducts[productName].count++;
+
+        localStorage.setItem("cartProducts", JSON.stringify(addToCartProducts));
+      }
+
+      //Decreasing product number
+      if (e.target.classList.contains("atc-decrement")) {
+        let addedProductCount = e.target
+          .closest(".add-to-cart")
+          .querySelector(".atc-product-count");
+        if (Number(addedProductCount.textContent) - 1 === 0) {
+          adcTargetParent.innerHTML = "";
+          adcTargetParent.insertAdjacentHTML(
+            "afterbegin",
+            `<button type="submit" class="add-to-cart-button">ADD TO CART</button>`
+          );
+          delete addToCartProducts[productName];
+          localStorage.setItem(
+            "cartProducts",
+            JSON.stringify(addToCartProducts)
+          );
+        } else {
+          addedProductCount.textContent =
+            Number(addedProductCount.textContent) - 1;
+          addToCartProducts[productName].count--;
+        }
+
+        localStorage.setItem("cartProducts", JSON.stringify(addToCartProducts));
+      }
+    });
+  }
+};
+
+addToCart();
+
+//Cart page
+const cartPage = function () {
+  if (viewCart) {
+    viewCart.addEventListener("click", () => {
+      if (!getData("name")) {
+        window.location.href = "signIn.html";
+      } else {
+        window.location.href = "cart.html";
+      }
+    });
+  }
+
+  if (
+    localStorage.getItem("cartProducts") &&
+    Object.keys(JSON.parse(localStorage.getItem("cartProducts"))).length > 0
+  ) {
+    
+    if (addtoCartMainDiv) {
+      const cartProductsFromLS = localStorage.getItem("cartProducts");
+      if (cartProductsFromLS) {
+        const cartProducts = JSON.parse(cartProductsFromLS);
+
+        Object.keys(cartProducts).forEach((key) => {
+          const html = `<span class="add-product">
+            <span class="add-product-name">${key}</span>
+            <span class="add-product-img">
+              <img src="${cartProducts[key].image}" />
+            </span>
+            <span class="add-data">
+              <span class="add-product-price">₹ ${
+                cartProducts[key].price
+              }</span>
+              <span class="mobile-remove">×</span>
+              <span class="add-count">
+                <button class="add-decrement">-</button>
+                <span class="add-product-count">${
+                  cartProducts[key].count
+                }</span>
+                <button class="add-increment">+</button>
+              </span>
+              <span class="mobile-remove">=</span>
+              <span>₹ ${
+                cartProducts[key].price * cartProducts[key].count
+              }</span>
+            </span>
+          </span>`;
+
+          addtoCartMainDiv.insertAdjacentHTML("afterbegin", html);
+        });
+      }
+    }
+  } else {
+    if (addtoCartMainDiv) {
+      cardNoProducts.style.display = "block";
+      checkoutButton.forEach((button) => {
+        button.style.display = "none";
+      });
+    }
+  }
+};
+
+cartPage();
+
+const increaseOrDecreaseProductFromCartPage = function () {
+  const cartAddRemove = document.querySelectorAll(".add-count");
+
+  //Cart add or decrease products
+  if (addtoCartMainDiv) {
+    addToCartProducts = JSON.parse(localStorage.getItem("cartProducts"));
+    for (const ele of cartAddRemove) {
+      ele.addEventListener("click", (e) => {
+        const productCount = ele.querySelector(".add-product-count");
+        const productName = e.target
+          .closest(".add-product")
+          .querySelector(".add-product-name").textContent;
+
+        if (e.target.classList.contains("add-increment")) {
+
+          productCount.textContent = Number(productCount.textContent) + 1;
+          addToCartProducts[productName].count++;
+          localStorage.setItem(
+            "cartProducts",
+            JSON.stringify(addToCartProducts)
+          );
+        }
+
+        if (e.target.classList.contains("add-decrement")) {
+       
+          if (Number(productCount.textContent) > 1) {
+            productCount.textContent = Number(productCount.textContent) - 1;
+            addToCartProducts[productName].count--;
+            localStorage.setItem(
+              "cartProducts",
+              JSON.stringify(addToCartProducts)
+            );
+          } else {
+            e.target.closest(".add-product").style.display = "none";
+            delete addToCartProducts[productName];
+            localStorage.setItem(
+              "cartProducts",
+              JSON.stringify(addToCartProducts)
+            );
+            if (
+              Object.keys(JSON.parse(localStorage.getItem("cartProducts")))
+                .length === 0
+            ) {
+              cardNoProducts.style.display = "block";
+              checkoutButton.forEach((button) => {
+                button.style.display = "none";
+              });
+            }
+          }
+        }
+      });
+    }
+  }
+};
+
+increaseOrDecreaseProductFromCartPage();
