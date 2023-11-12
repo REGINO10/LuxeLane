@@ -26,8 +26,9 @@ const facetSet = new Set();
 const mobileFacet = document.querySelector(".mobile-facet");
 const viewCart = document.querySelector(".cart-image");
 const addtoCartMainDiv = document.querySelector(".add-products");
-const cardNoProducts = document.querySelector(".cart-no-products");
+const cartNoProducts = document.querySelector(".cart-no-products");
 const checkoutButton = document.querySelectorAll(".checkout");
+const cartNoProductsParent = document.querySelector(".cart-no-products-parent");
 
 let users = [
   {
@@ -84,6 +85,22 @@ function productAdd(category) {
     const categoryEntry = Object.entries(products[category]);
 
     categoryEntry.forEach((cat) => {
+      let cartButton;
+      if (localStorage.getItem("cartProducts")) {
+        cartButton = JSON.parse(localStorage.getItem("cartProducts"))[
+          cat[1].name
+        ]
+          ? `<span class="new-add-to-cart">
+              <button class="atc-decrement">-</button>
+              <span class="atc-product-count">${
+                JSON.parse(localStorage.getItem("cartProducts"))[cat[1].name]
+                  .count
+              }</span>
+              <button class="atc-increment">+</button>
+              </span>`
+          : `<button type="submit" class="add-to-cart-button">ADD TO CART</button>`;
+      }
+
       const product = `<div class="product">
         <span class="product-image">
         <img src="../images/products/${category}.jpg">
@@ -94,7 +111,11 @@ function productAdd(category) {
         <div class="product-price">${cat[1].price}</div>
         </span>
         <span class="add-to-cart">
-        <button type="submit" class="add-to-cart-button">ADD TO CART</button>
+        ${
+          cartButton
+            ? cartButton
+            : `<button type="submit" class="add-to-cart-button">ADD TO CART</button>`
+        }
         </span>
         </span>
         </div>`;
@@ -103,6 +124,12 @@ function productAdd(category) {
     });
   }
 }
+
+`<span class="new-add-to-cart">
+    <button class="atc-decrement">-</button>
+    <span class="atc-product-count">1</span>
+    <button class="atc-increment">+</button>
+    </span>`;
 
 //To add products
 function populateProducts() {
@@ -450,7 +477,6 @@ const cartPage = function () {
     localStorage.getItem("cartProducts") &&
     Object.keys(JSON.parse(localStorage.getItem("cartProducts"))).length > 0
   ) {
-    
     if (addtoCartMainDiv) {
       const cartProductsFromLS = localStorage.getItem("cartProducts");
       if (cartProductsFromLS) {
@@ -475,7 +501,7 @@ const cartPage = function () {
                 <button class="add-increment">+</button>
               </span>
               <span class="mobile-remove">=</span>
-              <span>₹ ${
+              <span class="mobile-cart-price">₹ ${
                 cartProducts[key].price * cartProducts[key].count
               }</span>
             </span>
@@ -485,9 +511,13 @@ const cartPage = function () {
         });
       }
     }
+    if (cartNoProductsParent) {
+      cartNoProductsParent.style.display = "none";
+    }
   } else {
     if (addtoCartMainDiv) {
-      cardNoProducts.style.display = "block";
+      cartNoProductsParent.style.display = "flex";
+      cartNoProducts.style.display = "block";
       checkoutButton.forEach((button) => {
         button.style.display = "none";
       });
@@ -500,19 +530,32 @@ cartPage();
 const increaseOrDecreaseProductFromCartPage = function () {
   const cartAddRemove = document.querySelectorAll(".add-count");
 
+  const priceUpdate = (element, productName, productCount) => {
+    element.target
+      .closest(".add-data")
+      .querySelector(".mobile-cart-price").textContent =
+      (Number(productCount.textContent) + 1) *
+      Number(
+        JSON.parse(localStorage.getItem("cartProducts"))[productName].price
+      );
+  };
+
   //Cart add or decrease products
   if (addtoCartMainDiv) {
     addToCartProducts = JSON.parse(localStorage.getItem("cartProducts"));
     for (const ele of cartAddRemove) {
       ele.addEventListener("click", (e) => {
+        const cartProductName = e.target
+          .closest(".add-product")
+          .querySelector(".add-product-name").textContent;
         const productCount = ele.querySelector(".add-product-count");
         const productName = e.target
           .closest(".add-product")
           .querySelector(".add-product-name").textContent;
 
         if (e.target.classList.contains("add-increment")) {
-
           productCount.textContent = Number(productCount.textContent) + 1;
+          priceUpdate(e, cartProductName, productCount);
           addToCartProducts[productName].count++;
           localStorage.setItem(
             "cartProducts",
@@ -521,9 +564,9 @@ const increaseOrDecreaseProductFromCartPage = function () {
         }
 
         if (e.target.classList.contains("add-decrement")) {
-       
           if (Number(productCount.textContent) > 1) {
             productCount.textContent = Number(productCount.textContent) - 1;
+            priceUpdate(e, cartProductName, productCount);
             addToCartProducts[productName].count--;
             localStorage.setItem(
               "cartProducts",
@@ -540,7 +583,8 @@ const increaseOrDecreaseProductFromCartPage = function () {
               Object.keys(JSON.parse(localStorage.getItem("cartProducts")))
                 .length === 0
             ) {
-              cardNoProducts.style.display = "block";
+              cartNoProductsParent.style.display = "flex";
+              cartNoProducts.style.display = "block";
               checkoutButton.forEach((button) => {
                 button.style.display = "none";
               });
