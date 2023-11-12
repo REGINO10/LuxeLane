@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" />
+    <link rel="stylesheet" href="../css/cart.css" type="text/css" />
+    <link rel="icon" href="../images/logo/logo.jpg" type="image/x-icon" />
+    <title>Luxe Lane</title>
+  </head>
+  <body>
+    <div class="back-drop" onclick="closeMobileOptions()"></div>
+    <span class="mobile-facet" onclick="closeMobileOptions()"></span>
+    <ul class="mobile-header-navs" onclick="closeMobileOptions()">
+      <li class="sign-in">
+        <a href="signIn.html">SIGN IN</a>
+      </li>
+      <li>
+        <a href="signOn.html">REGISTER</a>
+      </li>
+      <li>CONTACT US</li>
+      <li>ORDERS</li>
+    </ul>
+    <div class="body">
+      <header>
+        <img
+          src="../images/logo/logo.png"
+          alt="logo"
+          class="logo"
+          onclick="mobileFilter()"
+        />
+
+        <ul class="header-navs">
+          <li class="menu" onclick="mainDropDown()">MENU</li>
+          <li class="sign-in non-menu">
+            <a href="signIn.html">SIGN IN</a>
+          </li>
+          <li class="sign-on non-menu">
+            <a href="signOn.html">REGISTER</a>
+          </li>
+          <li class="non-menu">CONTACT US</li>
+          <li class="non-menu">ORDERS</li>
+        </ul>
+      </header>
+      <main>
+        <h1 class="cart-page-title">CART PAGE</h1>
+        <span class="cart-top">
+          <span class="nav-path"><a href="index.html">home</a></span>
+          <span class="checkout checkout-top">
+            <button>checkout</button>
+          </span>
+        </span>
+
+        <span class="add-products">
+          <span class="cart-no-products-parent">
+            <span class="cart-no-products"
+              >NO PRODUCTS IN CART. <a href="index.html">To shop</a></span
+            >
+          </span>
+        </span>
+        <span class="checkout">
+          <button>checkout</button>
+        </span>
+      </main>
+      <footer>
+        <ol class="footer-navs">
+          <li>Terms and Conditions</li>
+          <li>Policy</li>
+        </ol>
+      </footer>
+    </div>
+    <script src="../js/script.js"></script>
+  </body>
+</html>
