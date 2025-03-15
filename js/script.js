@@ -29,6 +29,7 @@ const addtoCartMainDiv = document.querySelector(".add-products");
 const cartNoProducts = document.querySelector(".cart-no-products");
 const checkoutButton = document.querySelectorAll(".checkout");
 const cartNoProductsParent = document.querySelector(".cart-no-products-parent");
+const sample = 0;
 
 let users = [
   {
